@@ -60,16 +60,16 @@ public class FOVAgent : MonoBehaviour
 	}
 
 	[HideInInspector]
-	public void SetUnderFOW(bool isUnder)
+	public void SetUnderFOW(bool isInSight, bool cheatNoFog = false)
 	{
-		isUnderFOW = isUnder;
+		isUnderFOW = isInSight;
 		if (disappearInFOW)
 		{
 			if (meshRenderers == null) return;
 
 			for (int  i = 0; i < meshRenderers.Count; i++) 
 			{
-				meshRenderers[i].enabled = isUnder;
+				meshRenderers[i].enabled = isInSight || cheatNoFog;
 			}
 		}
 	}

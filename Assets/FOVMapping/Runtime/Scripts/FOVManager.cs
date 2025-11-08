@@ -70,6 +70,12 @@ public class FOVManager : MonoBehaviour
 	[Tooltip("How much will the blocked sight be 'pushed away' to prevent flickers on vertical obstacles?")]
 	private float blockOffset = 1.0f;
 
+	// Cheat mode
+	[Header("Debug")]
+	[SerializeField]
+	[Tooltip("Cheat mode: Fog calculations continue but fog is not rendered and agents are not hidden. Useful for debugging.")]
+	private bool cheatNoFog = false;
+
 	// Agents status
 	private List<FOVAgent> FOVAgents;
 
@@ -124,12 +130,15 @@ public class FOVManager : MonoBehaviour
 	[Tooltip("(Do not modify) Pixel reader computer shader")]
 	private ComputeShader pixelReader;
 
+	private MeshRenderer projectorMeshRenderer;
+
 	private void Awake()
 	{
 		FOVMaterial = new Material(FOVShader);
 
 		FOWMaterial = new Material(FOWProjectorShader);
-		GetComponent<MeshRenderer>().material = FOWMaterial;
+		projectorMeshRenderer = GetComponent<MeshRenderer>();
+		projectorMeshRenderer.material = FOWMaterial;
 
 		blurMaterial = new Material(GaussianShader);
 
@@ -188,6 +197,8 @@ public class FOVManager : MonoBehaviour
 		omniRangesBuffer = new ComputeBuffer(maxFriendlyAgentCount, sizeof(float), ComputeBufferType.IndirectArguments);
 
 		EnableFOV();
+		
+		UpdateCheatModeState();
 	}
 
 	private void OnEnable()
@@ -198,6 +209,14 @@ public class FOVManager : MonoBehaviour
 	private void OnDisable() 
 	{
 		if (Camera.main != null) Camera.main.depthTextureMode = DepthTextureMode.None;
+	}
+
+	private void OnValidate()
+	{
+		if (Application.isPlaying)
+		{
+			UpdateCheatModeState();
+		}
 	}
 
 	private void OnDestroy()
@@ -425,7 +444,7 @@ public class FOVManager : MonoBehaviour
 			}
 
 			bool isInSight = alphaSamples[i] <= agent.disappearAlphaThreshold;
-			agent.SetUnderFOW(isInSight);
+			agent.SetUnderFOW(isInSight, cheatNoFog);
 		}
 
 		needAgentVisibilityUpdate = true;
@@ -465,6 +484,30 @@ public class FOVManager : MonoBehaviour
 	public void ClearFOVAgents()
 	{
 		FOVAgents.Clear();
+	}
+
+	// Cheat mode interface
+	public bool CheatNoFog
+	{
+		get => cheatNoFog;
+		set
+		{
+			if (cheatNoFog != value)
+			{
+				cheatNoFog = value;
+				UpdateCheatModeState();
+			}
+		}
+	}
+	private void UpdateCheatModeState()
+	{
+		if (projectorMeshRenderer != null)
+		{
+			projectorMeshRenderer.enabled = !cheatNoFog;
+		}
+
+		// needAgentVisibilityUpdate = true;
+		
 	}
 
 }

@@ -121,6 +121,7 @@ If you're using Unity's **Universal Render Pipeline (URP)**, start by importing 
 | `Shader FOWProjectorShader`  | (Do not modify) Fog of war projector shader                  |
 | `Shader GaussianShader`      | (Do not modify) Gaussian filter shader                       |
 | `ComputeShader PixelReader`  | (Do not modify) Pixel reader computer shader                 |
+| `bool cheatNoFog`            | (Debug) Cheat mode: Fog calculations continue but fog is not rendered and agents are not hidden. Useful for debugging. |
 
 ### Methods
 
@@ -134,6 +135,7 @@ If you're using Unity's **Universal Render Pipeline (URP)**, start by importing 
 | `FOVAgent GetAgent(int idx)`          | Retrieve an `FOVAgent` from the internal list with the specified index. |
 | `int GetFOVAgentCount()`              | Get the number of `FOVAgent` in the internal list.           |
 | `void ClearFOVAgents()`               | Remove all `FOVAgent`s from the internal list. The FOV system will not work until another `FOVAgent` is added. |
+| `bool CheatNoFog`                     | Get or set cheat mode. When enabled, fog calculations continue but fog is not rendered and agents are not hidden. Useful for debugging. |
 
 # Pipeline Compatibility
 
