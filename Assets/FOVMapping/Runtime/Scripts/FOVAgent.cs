@@ -69,7 +69,7 @@ public class FOVAgent : MonoBehaviour
 
 			for (int  i = 0; i < meshRenderers.Count; i++) 
 			{
-				meshRenderers[i].enabled = isInSight || cheatNoFog;
+				if(meshRenderers[i]) meshRenderers[i].enabled = isInSight || cheatNoFog; //TODO: better null tracking
 			}
 		}
 	}
