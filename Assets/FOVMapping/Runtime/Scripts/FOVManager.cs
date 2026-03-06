@@ -157,6 +157,9 @@ public class FOVManager : MonoBehaviour
         {
 			isURP = false;
 		}
+		
+		// Initialize the agents list here so AddFOVAgent can be called before Start()
+		FOVAgents = new List<FOVAgent>();
 	}
 
 	private void Start()
